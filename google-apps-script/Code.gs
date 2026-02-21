@@ -13,7 +13,7 @@
 
 // ============ CONFIGURATION ============
 // Name of the sheet tab (default is "Sheet1")
-const SHEET_NAME = 'Sheet1';
+const SHEET_NAME = 'MASTER';
 
 // Column mapping (1-indexed) based on user's sheet:
 // EjamaatID, Age, MARKAZ, CATG, ROW, SEAT, Full_Name, Quran_Sanad, Talim, Contact_No, Is_Updated
