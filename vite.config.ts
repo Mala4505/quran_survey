@@ -19,17 +19,17 @@ export default defineConfig({
                 start_url: '/',
                 icons: [
                     {
-                        src: 'icon-192.png',
+                        src: '/quran.jpg',
                         sizes: '192x192',
                         type: 'image/png',
                     },
                     {
-                        src: 'icon-512.png',
+                        src: '/quran.jpg',
                         sizes: '512x512',
                         type: 'image/png',
                     },
                     {
-                        src: 'icon-512.png',
+                        src: '/quran.jpg',
                         sizes: '512x512',
                         type: 'image/png',
                         purpose: 'maskable',
