@@ -125,13 +125,7 @@
 
 // src/components/LoginScreen.tsx
 import { useState, useCallback } from 'react';
-import { 
-  isITSAllowed, 
-  setLoggedInITS, 
-  getAllPeople, 
-  replaceAllPeople, 
-  setAllowedITS 
-} from '../services/db';
+import { setLoggedInITS, getAllPeople, replaceAllPeople, setAllowedITS } from '../services/db';
 import { fetchFullDataset } from '../services/sync';
 
 interface LoginScreenProps {
@@ -139,13 +133,11 @@ interface LoginScreenProps {
   showToast: (message: string, type: 'success' | 'error' | 'warning') => void;
 }
 
-// --- Direct config inside the component ---
-const DEFAULT_PASSWORD = '1234'; // change to your preferred password
-const SEED_ITS_NUMBERS = [30477380, 30453355]; // ITS numbers allowed before sync
+// ✅ Hardcoded ITS numbers allowed for login
+const ALLOWED_ITS = [30477380, 30493355, 786110];
 
 export default function LoginScreen({ onLogin, showToast }: LoginScreenProps) {
   const [itsInput, setItsInput] = useState('');
-  const [passwordInput, setPasswordInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -154,29 +146,23 @@ export default function LoginScreen({ onLogin, showToast }: LoginScreenProps) {
     setError('');
 
     const its = parseInt(itsInput.trim(), 10);
-    if (isNaN(its) || itsInput.trim().length === 0) {
+    if (isNaN(its)) {
       setError('Please enter a valid ITS number');
       return;
     }
 
-    if (passwordInput.trim() !== DEFAULT_PASSWORD) {
-      setError('Incorrect password');
+    // Check against hardcoded allowed ITS numbers
+    if (!ALLOWED_ITS.includes(its)) {
+      setError('ITS number not authorized');
       return;
     }
 
     setLoading(true);
 
     try {
-      // Check if ITS is allowed locally or seed
-      const allowed = await isITSAllowed(its);
-      if (!allowed && !SEED_ITS_NUMBERS.includes(its)) {
-        setError('ITS number not authorized');
-        setLoading(false);
-        return;
-      }
-
       // Check if local data exists
       const existingPeople = await getAllPeople();
+
       if (existingPeople.length === 0) {
         try {
           const people = await fetchFullDataset();
@@ -190,7 +176,7 @@ export default function LoginScreen({ onLogin, showToast }: LoginScreenProps) {
             return;
           }
         } catch {
-          showToast('Cannot fetch full dataset, using seed ITS only', 'warning');
+          showToast('Cannot fetch full dataset, logging in with default ITS only', 'warning');
         }
       }
 
@@ -202,7 +188,7 @@ export default function LoginScreen({ onLogin, showToast }: LoginScreenProps) {
     } finally {
       setLoading(false);
     }
-  }, [itsInput, passwordInput, onLogin, showToast]);
+  }, [itsInput, onLogin, showToast]);
 
   return (
     <div className="login-container">
@@ -211,7 +197,7 @@ export default function LoginScreen({ onLogin, showToast }: LoginScreenProps) {
           <img src="/quran.jpg" alt="Quran Logo" width={48} height={48} />
         </div>
         <h1 className="login-title">Quran Survey</h1>
-        <p className="login-subtitle">Enter your ITS number and password</p>
+        <p className="login-subtitle">Enter your ITS number to continue</p>
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="input-group">
@@ -226,20 +212,9 @@ export default function LoginScreen({ onLogin, showToast }: LoginScreenProps) {
             />
           </div>
 
-          <div className="input-group">
-            <input
-              type="password"
-              placeholder="Password"
-              value={passwordInput}
-              onChange={(e) => setPasswordInput(e.target.value)}
-              className={`login-input ${error ? 'input-error' : ''}`}
-              disabled={loading}
-            />
-          </div>
-
           {error && <div className="error-message">{error}</div>}
 
-          <button type="submit" className="btn-login" disabled={loading || !itsInput || !passwordInput}>
+          <button type="submit" className="btn-login" disabled={loading || !itsInput}>
             {loading ? 'Connecting...' : 'Login'}
           </button>
         </form>
