@@ -4,6 +4,9 @@ import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
 import type { Person, PendingChange, SyncMeta } from '../types';
 import { SEED_ITS_NUMBERS } from '../config';
 
+// Convert seed ITS numbers to number array
+const SEED_ITS_NUMBERS_NUM = SEED_ITS_NUMBERS.map(Number);
+
 interface QuranSurveyDB extends DBSchema {
     people: {
         key: number; // EjamaatID
@@ -51,22 +54,20 @@ async function getDB(): Promise<IDBPDatabase<QuranSurveyDB>> {
                 // Auth store
                 db.createObjectStore('auth', { keyPath: 'key' });
             }
-            // Version 2: Contact_No and Is_Updated fields are added to Person/PendingChange.
-            // No new object stores or indexes needed — fields are just new properties on existing records.
+            // Version 2: Contact_No and Is_Updated fields are added to Person/PendingChange
         },
     });
 
     // Initialize seed auth data if not present
     const authData = await dbInstance.get('auth', 'allowedITS');
     if (!authData) {
-        await dbInstance.put('auth', { key: 'allowedITS', data: SEED_ITS_NUMBERS });
+        await dbInstance.put('auth', { key: 'allowedITS', data: SEED_ITS_NUMBERS_NUM });
     }
 
     return dbInstance;
 }
 
 // ---- People ----
-
 export async function getAllPeople(): Promise<Person[]> {
     const db = await getDB();
     return db.getAll('people');
@@ -98,7 +99,6 @@ export async function getPeopleCount(): Promise<number> {
 }
 
 // ---- Pending Changes ----
-
 export async function savePendingChange(change: PendingChange): Promise<void> {
     const db = await getDB();
     await db.put('pendingChanges', change);
@@ -130,7 +130,6 @@ export async function getPendingChangeCount(): Promise<number> {
 }
 
 // ---- Meta ----
-
 export async function getSyncMeta(): Promise<SyncMeta> {
     const db = await getDB();
     const meta = await db.get('meta', 'syncMeta');
@@ -144,7 +143,6 @@ export async function updateSyncMeta(syncMeta: SyncMeta): Promise<void> {
 }
 
 // ---- Auth ----
-
 export async function getLoggedInITS(): Promise<number | null> {
     const db = await getDB();
     const record = await db.get('auth', 'loggedInITS');
@@ -163,12 +161,13 @@ export async function setLoggedInITS(its: number | null): Promise<void> {
 export async function getAllowedITS(): Promise<number[]> {
     const db = await getDB();
     const record = await db.get('auth', 'allowedITS');
-    return record ? (record.data as number[]) : SEED_ITS_NUMBERS;
+    return record ? (record.data as number[]).map(Number) : SEED_ITS_NUMBERS_NUM;
 }
 
 export async function setAllowedITS(itsList: number[]): Promise<void> {
     const db = await getDB();
-    await db.put('auth', { key: 'allowedITS', data: itsList });
+    // Ensure everything is number
+    await db.put('auth', { key: 'allowedITS', data: itsList.map(Number) });
 }
 
 export async function isITSAllowed(its: number): Promise<boolean> {
