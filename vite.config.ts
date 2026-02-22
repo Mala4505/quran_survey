@@ -9,7 +9,7 @@ export default defineConfig({
             registerType: 'autoUpdate',
             includeAssets: ['vite.svg'],
             manifest: {
-                name: 'Quran Status Update',
+                name: 'Quran Survey Update',
                 short_name: 'QuranStatus',
                 description: 'Offline PWA for updating Quran learning status',
                 theme_color: '#0a314d',

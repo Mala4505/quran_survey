@@ -81,7 +81,7 @@ export default function LoginScreen({ onLogin, showToast }: LoginScreenProps) {
                         <path d="M2 12l10 5 10-5" />
                     </svg>
                 </div>
-                <h1 className="login-title">Quran Status Update</h1>
+                <h1 className="login-title">Quran Survey</h1>
                 <p className="login-subtitle">Enter your ITS number to continue</p>
 
                 <form onSubmit={handleSubmit} className="login-form">
