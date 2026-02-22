@@ -130,16 +130,18 @@ import {
   setLoggedInITS, 
   getAllPeople, 
   replaceAllPeople, 
-  setAllowedITS,
-  getDefaultPassword 
+  setAllowedITS 
 } from '../services/db';
 import { fetchFullDataset } from '../services/sync';
-import { SEED_ITS_NUMBERS } from '../config';
 
 interface LoginScreenProps {
   onLogin: (its: number) => void;
   showToast: (message: string, type: 'success' | 'error' | 'warning') => void;
 }
+
+// --- Direct config inside the component ---
+const DEFAULT_PASSWORD = '1234'; // change to your preferred password
+const SEED_ITS_NUMBERS = [30477380, 30453355]; // ITS numbers allowed before sync
 
 export default function LoginScreen({ onLogin, showToast }: LoginScreenProps) {
   const [itsInput, setItsInput] = useState('');
@@ -157,19 +159,15 @@ export default function LoginScreen({ onLogin, showToast }: LoginScreenProps) {
       return;
     }
 
+    if (passwordInput.trim() !== DEFAULT_PASSWORD) {
+      setError('Incorrect password');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const defaultPassword = await getDefaultPassword();
-
-      // Check password
-      if (passwordInput.trim() !== defaultPassword) {
-        setError('Incorrect password');
-        setLoading(false);
-        return;
-      }
-
-      // Check if ITS is allowed
+      // Check if ITS is allowed locally or seed
       const allowed = await isITSAllowed(its);
       if (!allowed && !SEED_ITS_NUMBERS.includes(its)) {
         setError('ITS number not authorized');
@@ -177,7 +175,7 @@ export default function LoginScreen({ onLogin, showToast }: LoginScreenProps) {
         return;
       }
 
-      // Check if people exist locally
+      // Check if local data exists
       const existingPeople = await getAllPeople();
       if (existingPeople.length === 0) {
         try {
@@ -221,10 +219,7 @@ export default function LoginScreen({ onLogin, showToast }: LoginScreenProps) {
               type="number"
               placeholder="ITS Number"
               value={itsInput}
-              onChange={(e) => {
-                setItsInput(e.target.value);
-                setError('');
-              }}
+              onChange={(e) => { setItsInput(e.target.value); setError(''); }}
               className={`login-input ${error ? 'input-error' : ''}`}
               disabled={loading}
               autoFocus
