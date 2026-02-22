@@ -14,7 +14,7 @@ export default function App() {
     const [loggedIn, setLoggedIn] = useState(false);
     const [currentITS, setCurrentITS] = useState<number | null>(null);
     const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
-    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
     const [syncState, setSyncState] = useState<{ status: string; message?: string }>({ status: 'idle' });
     const [pendingCount, setPendingCount] = useState(0);
     const [checkingAuth, setCheckingAuth] = useState(true);
@@ -67,7 +67,7 @@ export default function App() {
         };
     }, [loggedIn, currentITS]);
 
-    const showToast = useCallback((message: string, type: 'success' | 'error' | 'info' = 'info') => {
+    const showToast = useCallback((message: string, type: 'success' | 'error' | 'warning' = 'warning') => {
         setToast({ message, type });
     }, []);
 

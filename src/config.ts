@@ -1,29 +1,30 @@
 // App Configuration
-
+import { ITS_No } from "./data/users.json";
 // Replace this with your deployed Google Apps Script Web App URL
 // export const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwtr6eb-jfpcjpN2ccz5OCWeBw-hJ_Mma33Aqr8PNwNe6D_KWbKWh4YUQ1V51qSK6tr/exec';
 export const APPS_SCRIPT_URL = 'https://quran-survey.aliasgerzmala.workers.dev/';
 
 // Seed ITS numbers that can log in before first sync
-export const SEED_ITS_NUMBERS = [30477380, 30453355];
+// export const SEED_ITS_NUMBERS = [30477380, 30453355];
+export const SEED_ITS_NUMBERS = ITS_No;
 
 // Quran Sanad options
 export const QURAN_SANAD_OPTIONS = [
-    'Juz Amma',
-    'Marhala Khamesa',
-    'Marhala Rabea',
-    'Marhala Sabea',
-    'Marhala Sadesa',
-    'Marhala Salesa',
-    'Marhala Sania',
-    'Marhala Ula',
-    'Sanah Salesah',
-    'Sanah Saniyah',
-    'Sanah Ula',
+    'No Sanad',
     'Hafiz',
     'Surah al-Balad',
     'Surah al-Inshiqaq',
-    'No Sanad',
+    'Juz Amma',
+    'Marhala Ula',
+    'Marhala Sania',
+    'Marhala Salesa',
+    'Marhala Rabea',
+    'Marhala Khamesa',
+    'Marhala Sadesa',
+    'Marhala Sabea',
+    'Sanah Ula',
+    'Sanah Saniyah',
+    'Sanah Salesah',
 ] as const;
 
 // Talim options

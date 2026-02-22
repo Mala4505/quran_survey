@@ -5,7 +5,7 @@ import { APPS_SCRIPT_URL } from '../config';
 
 interface LoginScreenProps {
     onLogin: (its: number) => void;
-    showToast: (message: string, type: 'success' | 'error' | 'info') => void;
+    showToast: (message: string, type: 'success' | 'error' | 'warning') => void;
 }
 
 export default function LoginScreen({ onLogin, showToast }: LoginScreenProps) {
@@ -58,7 +58,7 @@ export default function LoginScreen({ onLogin, showToast }: LoginScreenProps) {
                         setLoading(false);
                         return;
                     }
-                    showToast('Logged in with cached data (offline)', 'info');
+                    showToast('Logged in with cached data (offline)', 'warning');
                 }
             }
 
