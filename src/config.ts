@@ -1,7 +1,8 @@
 // App Configuration
 
 // Replace this with your deployed Google Apps Script Web App URL
-export const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwtr6eb-jfpcjpN2ccz5OCWeBw-hJ_Mma33Aqr8PNwNe6D_KWbKWh4YUQ1V51qSK6tr/exec';
+// export const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwtr6eb-jfpcjpN2ccz5OCWeBw-hJ_Mma33Aqr8PNwNe6D_KWbKWh4YUQ1V51qSK6tr/exec';
+export const APPS_SCRIPT_URL = 'https://quran-survey.aliasgerzmala.workers.dev/';
 
 // Seed ITS numbers that can log in before first sync
 export const SEED_ITS_NUMBERS = [30477380, 30453355];
