@@ -88,10 +88,13 @@ export async function performSync(
         await updateSyncMeta({ lastSync: null, lastSyncStatus: 'syncing' });
 
         // Step 1: Upload pending changes
-        await uploadChanges(loggedInITS);
+        const ok = await uploadChanges(loggedInITS);
 
-        // Step 2: Clear pending changes
-        await clearPendingChanges();
+        // Step 2: Only clear if backend confirmed success
+        if (ok) {
+            await clearPendingChanges();
+        }
+
 
         // Step 3: Download full dataset
         const people = await fetchFullDataset();
