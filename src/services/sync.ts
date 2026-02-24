@@ -78,10 +78,8 @@ export async function performSync(loggedInITS: number, onStatus?: SyncCallback):
 
     await updateSyncMeta({ lastSync: null, lastSyncStatus: 'syncing' });
 
-    // Step 1: Upload pending changes
+    // Step 1: Upload pending changes (if any)
     const ok = await uploadChanges(loggedInITS);
-
-    // Step 2: Only clear if backend confirmed success
     if (ok) {
       await clearPendingChanges();
       console.log('[SYNC] Cleared local pending changes');
@@ -89,22 +87,19 @@ export async function performSync(loggedInITS: number, onStatus?: SyncCallback):
       console.warn('[SYNC] Upload failed, keeping local pending changes for retry');
     }
 
-    // Step 3: Download full dataset (always refresh after sync)
+    // Step 2: Always refresh dataset from Sheets
     const people = await fetchFullDataset();
     console.log('[SYNC] Downloaded dataset count:', people.length);
 
-    // Step 4: Replace local dataset
     await replaceAllPeople(people);
-    console.log('[SYNC] Local dataset replaced');
+    console.log('[SYNC] Local dataset replaced with latest from Sheets');
 
-    // Step 5: Update allowed ITS list
+    // Step 3: Update ITS list and cache
     const allITS = people.map((p) => p.EjamaatID);
     await setAllowedITS(allITS);
-
-    // Step 6: Invalidate search cache
     invalidateSearchCache();
 
-    // Step 7: Update meta
+    // Step 4: Update meta
     const now = Date.now();
     await updateSyncMeta({ lastSync: now, lastSyncStatus: 'success' });
 
@@ -120,6 +115,7 @@ export async function performSync(loggedInITS: number, onStatus?: SyncCallback):
     return false;
   }
 }
+
 
 export function startSyncScheduler(loggedInITS: number, onStatus?: SyncCallback): void {
   if (syncIntervalId) return; // Already running
